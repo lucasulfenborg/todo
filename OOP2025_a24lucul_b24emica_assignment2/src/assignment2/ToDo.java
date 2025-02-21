@@ -69,5 +69,7 @@ public class ToDo implements ActionListener, TaskListener{
 		frame.remove(t.getGuiComponent()); 
         frame.revalidate(); 
         frame.repaint();
+        
+        
 	}
 	}
