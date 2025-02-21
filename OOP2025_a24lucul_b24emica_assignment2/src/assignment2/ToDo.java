@@ -7,13 +7,15 @@ import java.awt.event.ActionListener;
 
 public class ToDo implements ActionListener, TaskListener{
 	
-	//Global variables to be accessible everywhere in the program
-	JButton newStudyTaskButton, newHomeTaskButton;
+	//Global JSWING components, accessible everywhere in the program
+	JButton newStudyTaskButton, newHomeTaskButton, newOtherTaskButton;
 	JFrame frame;
 	JPanel mainPanel;
 	JPanel createTasksPanel;
 	JPanel tasksPanel;
-
+	JLabel tasksCompletedLabel;
+	JScrollPane scrollPane;
+	//Global variables (for tracking the total number of tasks and number of completed tasks)
 	int numberOfTasks;
 	int numberOfCompletedTasks;
 	
@@ -51,33 +53,43 @@ public class ToDo implements ActionListener, TaskListener{
 		//Group create buttons in a panel
 		createTasksPanel = new JPanel();
 		createTasksPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-		createTasksPanel.setBackground(Color.GREEN);
 		//createTasksPanel.setSize(new Dimension(100, 100));
-        createTasksPanel.setPreferredSize(new Dimension(400, 50));
+        createTasksPanel.setPreferredSize(new Dimension(450, 50));
 
-      
 
-		//Create buttons
-		newStudyTaskButton = new JButton("New StudyTask");
+		//Create buttons for making new tasks
+		newStudyTaskButton = new JButton("New Study Task");
 		newStudyTaskButton.addActionListener(this);
 		createTasksPanel.add(newStudyTaskButton);
 		
-		newHomeTaskButton = new JButton("New HomeTask");
+		newHomeTaskButton = new JButton("New Home Task");
 		newHomeTaskButton.addActionListener(this);
 		createTasksPanel.add(newHomeTaskButton);
+		
+		newOtherTaskButton = new JButton("New Other Task");
+		newOtherTaskButton.addActionListener(this);
+		createTasksPanel.add(newOtherTaskButton);
 		
 		//Group tasks in a panel
 		tasksPanel = new JPanel();
 		tasksPanel.setLayout(new BoxLayout(tasksPanel, BoxLayout.Y_AXIS));
-		tasksPanel.setBackground(Color.RED);
-		tasksPanel.setPreferredSize(new Dimension(500, 200));
+		//tasksPanel.setPreferredSize(new Dimension(500, 200));
+		
+		 // Wrap tasksPanel inside a JScrollPane to make it scrollable
+        scrollPane = new JScrollPane(tasksPanel);
+        scrollPane.setPreferredSize(new Dimension(500, 200));
+
+		
+		//Panel with the tasks completed text
+		tasksCompletedLabel = new JLabel("You haven't created any tasks yet.");
 		
 		
 		
 		//Add all panels to the window
 		frame.add(mainPanel);
 		mainPanel.add(createTasksPanel);
-		mainPanel.add(tasksPanel);
+		mainPanel.add(scrollPane);
+		mainPanel.add(tasksCompletedLabel);
 
 
 		frame.setVisible(true);
@@ -97,6 +109,7 @@ public class ToDo implements ActionListener, TaskListener{
 			frame.revalidate();
 			numberOfTasks++;
 			
+			updateTasksCompletedLabel();
 
 		}
 		if (whichButton.getSource().equals(newHomeTaskButton)) {
@@ -107,11 +120,27 @@ public class ToDo implements ActionListener, TaskListener{
 			task.setTaskListener(this);
 			frame.revalidate();
 			numberOfTasks++;
+			
+			updateTasksCompletedLabel();
+
+		}
+		
+		if (whichButton.getSource().equals(newOtherTaskButton)) {
+			//Action of newHomeTaskButton on click (create a home task button)
+			Task task = new OtherTask();
+			tasksPanel.add(task.getGuiComponent());
+			//Listen on the remove button for clicks
+			task.setTaskListener(this);
+			frame.revalidate();
+			numberOfTasks++;
+			
+			updateTasksCompletedLabel();
+
 		}
 	}
 	
 
-	//Action for the remove button on click (remove the button)
+	//Action for the remove button on click (remove the button). Taken and overwritten from superclass.
 	@Override 
 	public void taskRemoved(Task t) {
 		tasksPanel.remove(t.getGuiComponent()); 
@@ -123,25 +152,27 @@ public class ToDo implements ActionListener, TaskListener{
         }
         
         numberOfTasks--;
+		updateTasksCompletedLabel();
 	}
 
+	//Overwrite taskcompleted and taskuncompleted to make it possible to track the number of completed tasks
 	@Override
 	public void taskCompleted(Task t) {
 		numberOfCompletedTasks++;
-		updateTasksCompleted();
+		updateTasksCompletedLabel();
 	}
 	
 	@Override
 	public void taskUncompleted(Task t) {
 		numberOfCompletedTasks--;
-		updateTasksCompleted();
+		updateTasksCompletedLabel();
 	}
 	
-	private void updateTasksCompleted() {
-		System.out.println(numberOfCompletedTasks + " out of " + numberOfTasks + " tasks completed.");
+	//Method for updating the bottom label (number of completed tasks)
+	public void updateTasksCompletedLabel() {
+		tasksCompletedLabel.setText(numberOfCompletedTasks + " out of " + numberOfTasks + " tasks completed.");
 	}
-	}
-
 	
+}
 	
 	
