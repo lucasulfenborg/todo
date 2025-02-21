@@ -1,2 +1,2 @@
 # todo
-university assignement
+university assignment
