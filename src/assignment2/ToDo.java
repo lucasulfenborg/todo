@@ -8,10 +8,10 @@ import java.awt.event.ActionListener;
 public class ToDo implements ActionListener, TaskListener{
 	
 	//Global JSWING components, accessible everywhere in the program
-	JButton newStudyTaskButton, newHomeTaskButton, newOtherTaskButton;
+	JButton newStudyTaskButton, newHomeTaskButton, newOtherTaskButton, sortTasksButton;
 	JFrame frame;
 	JPanel mainPanel;
-	JPanel createTasksPanel;
+	JPanel topButtonsPanel;
 	JPanel tasksPanel;
 	JLabel tasksCompletedLabel;
 	JScrollPane scrollPane;
@@ -37,12 +37,10 @@ public class ToDo implements ActionListener, TaskListener{
 		//Create the window
 		frame = new JFrame();
 		
-		
-		
 		//Configuration of the window: Layout, title, dimensions/size, visibility, make it exitable
 		//frame.setLayout(new BoxLayout(frame, BoxLayout.PAGE_AXIS));
 		frame.setTitle("ToDo");
-		frame.setBounds(100,100,500,350);
+		frame.setBounds(100,100,500,400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
 		
@@ -51,24 +49,28 @@ public class ToDo implements ActionListener, TaskListener{
 		mainPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 10)); 
 		
 		//Group create buttons in a panel
-		createTasksPanel = new JPanel();
-		createTasksPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-		//createTasksPanel.setSize(new Dimension(100, 100));
-        createTasksPanel.setPreferredSize(new Dimension(450, 50));
+		topButtonsPanel = new JPanel();
+		topButtonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+		topButtonsPanel.setPreferredSize(new Dimension(450, 70));
 
 
 		//Create buttons for making new tasks
 		newStudyTaskButton = new JButton("New Study Task");
 		newStudyTaskButton.addActionListener(this);
-		createTasksPanel.add(newStudyTaskButton);
+		topButtonsPanel.add(newStudyTaskButton);
 		
 		newHomeTaskButton = new JButton("New Home Task");
 		newHomeTaskButton.addActionListener(this);
-		createTasksPanel.add(newHomeTaskButton);
+		topButtonsPanel.add(newHomeTaskButton);
 		
 		newOtherTaskButton = new JButton("New Other Task");
 		newOtherTaskButton.addActionListener(this);
-		createTasksPanel.add(newOtherTaskButton);
+		topButtonsPanel.add(newOtherTaskButton);
+		
+		//Sort tasks button
+		sortTasksButton = new JButton("Sort tasks");
+		sortTasksButton.addActionListener(this);
+		topButtonsPanel.add(sortTasksButton);
 		
 		//Group tasks in a panel
 		tasksPanel = new JPanel();
@@ -87,7 +89,7 @@ public class ToDo implements ActionListener, TaskListener{
 		
 		//Add all panels to the window
 		frame.add(mainPanel);
-		mainPanel.add(createTasksPanel);
+		mainPanel.add(topButtonsPanel);
 		mainPanel.add(scrollPane);
 		mainPanel.add(tasksCompletedLabel);
 
@@ -174,6 +176,7 @@ public class ToDo implements ActionListener, TaskListener{
 		
 	}
 	
+	//Method for sorting a list of tasks by task type
 	public void sortTasks(Task[] t) {
 		System.out.println(t);
 	}
