@@ -171,6 +171,11 @@ public class ToDo implements ActionListener, TaskListener{
 	//Method for updating the bottom label (number of completed tasks)
 	public void updateTasksCompletedLabel() {
 		tasksCompletedLabel.setText(numberOfCompletedTasks + " out of " + numberOfTasks + " tasks completed.");
+		
+	}
+	
+	public void sortTasks(Task[] t) {
+		System.out.println(t);
 	}
 	
 }
