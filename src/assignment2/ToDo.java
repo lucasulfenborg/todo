@@ -13,7 +13,7 @@ public class ToDo implements ActionListener, TaskListener{
 	//Arraylist for storing the tasks
 	java.util.List<Task> taskList = new java.util.ArrayList<>();
 	
-	JButton newStudyTaskButton, newHomeTaskButton, newOtherTaskButton, sortTasksButton;
+	JButton newStudyTaskButton, newHomeTaskButton, newOtherTaskButton, sortByTypeButton, sortByNameButton, sortByCompletionButton;
 	JFrame frame;
 	JPanel mainPanel;
 	JPanel topButtonsPanel;
@@ -72,10 +72,19 @@ public class ToDo implements ActionListener, TaskListener{
 		newOtherTaskButton.addActionListener(this);
 		topButtonsPanel.add(newOtherTaskButton);
 		
-		//Sort tasks button
-		sortTasksButton = new JButton("Sort tasks");
-		sortTasksButton.addActionListener(this);
-		topButtonsPanel.add(sortTasksButton);
+		//Sort tasks buttons
+		sortByTypeButton = new JButton("Sort by type");
+		sortByTypeButton.addActionListener(this);
+		topButtonsPanel.add(sortByTypeButton);
+		
+		sortByNameButton = new JButton("Sort by name");
+		sortByNameButton.addActionListener(this);
+		topButtonsPanel.add(sortByNameButton);
+		
+		sortByCompletionButton = new JButton("Sort by Uncompleted");
+		sortByCompletionButton.addActionListener(this);
+		topButtonsPanel.add(sortByCompletionButton);
+		
 		
 		//Group tasks in a panel
 		tasksPanel = new JPanel();
@@ -148,26 +157,20 @@ public class ToDo implements ActionListener, TaskListener{
 
 		}
 		
-		else if (whichButton.getSource().equals(sortTasksButton)) {
-			//Example: sort alphabetically by toString()
-		    Collections.sort(taskList, new Comparator<Task>() {
-		        @Override
-		        public int compare(Task t1, Task t2) {
-		            return t1.toString().compareToIgnoreCase(t2.toString());
-		        }
-		    });
-
-		    //Refresh the GUI
-		    tasksPanel.removeAll();
-		    for (Task task : taskList) {
-		        tasksPanel.add(task.getGuiComponent());
-		    }
-		    frame.revalidate();
-		    frame.repaint();
+		else if (whichButton.getSource().equals(sortByTypeButton)) {
+		    Collections.sort(taskList, Comparator.comparing(Task::getTaskType, String.CASE_INSENSITIVE_ORDER));
+		    updateTaskDisplay();
 		}
-
+		else if (whichButton.getSource().equals(sortByCompletionButton)) {
+		    Collections.sort(taskList, Comparator.comparing(Task::isComplete));
+		    updateTaskDisplay();
 		}
-	
+		
+		else if (whichButton.getSource().equals(sortByNameButton)) {
+			Collections.sort(taskList, Comparator.comparing(Task::getText, String.CASE_INSENSITIVE_ORDER));
+		    updateTaskDisplay();
+		}
+		}
 
 	//Action for the remove button on click (remove the button). Taken and overwritten from superclass.
 	@Override 
@@ -181,6 +184,7 @@ public class ToDo implements ActionListener, TaskListener{
         }
         
         numberOfTasks--;
+        taskList.remove(t);
 		updateTasksCompletedLabel();
 	}
 
@@ -201,6 +205,15 @@ public class ToDo implements ActionListener, TaskListener{
 	public void updateTasksCompletedLabel() {
 		tasksCompletedLabel.setText(numberOfCompletedTasks + " out of " + numberOfTasks + " tasks completed.");
 		
+	}
+	
+	private void updateTaskDisplay() {
+	    tasksPanel.removeAll(); // Clear the panel
+	    for (Task task : taskList) {
+	        tasksPanel.add(task.getGuiComponent()); // Re-add in sorted order
+	    }
+	    tasksPanel.revalidate(); // Update layout
+	    tasksPanel.repaint();    // Redraw panel
 	}
 	
 }
