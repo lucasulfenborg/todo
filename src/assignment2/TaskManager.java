@@ -5,10 +5,12 @@ import javax.swing.JPanel;
 import java.util.ArrayList;
 
 import se.his.it401g.todo.Task;
+import se.his.it401g.todo.TaskListener;
 
-public class TaskManager {
+public class TaskManager  {
 	private int numberOfTasks;
 	private int numberOfCompletedTasks;
+	//Array list that will contain the tasks
 	private java.util.List<Task> taskList;
 
 	public TaskManager() {
@@ -16,10 +18,7 @@ public class TaskManager {
 
 	}
 	
-	
 	//Getters and setters
-	
-		
 	public int getNumberOfTasks() {
 		return numberOfTasks;
 	}
@@ -28,28 +27,31 @@ public class TaskManager {
 		return taskList;
 	}
 
-
-	public void setTaskList(java.util.List<Task> taskList) {
-		this.taskList = taskList;
+	public void addToTaskList(Task t) {
+		this.taskList.add(t);
+	}
+	
+	public void removeFromTaskList(Task t) {
+		this.taskList.remove(t);
 	}
 
-
-	public void setNumberOfTasks(int numberOfTasks) {
-		this.numberOfTasks = numberOfTasks;
+	public void incrementNumberOfTasks() {
+		this.numberOfTasks++;
+	}
+	
+	public void decrementNumberOfTasks() {
+		this.numberOfTasks--;
 	}
 
 	public int getNumberOfCompletedTasks() {
 		return numberOfCompletedTasks;
 	}
 
-	public void setNumberOfCompletedTasks(int numberOfCompletedTasks) {
-		this.numberOfCompletedTasks = numberOfCompletedTasks;
-	}
-
-	//Method for updating the bottom label (number of completed tasks)
-	public void updateTasksCompletedLabel(JLabel tasksCompletedLabel) {
-		tasksCompletedLabel.setText(numberOfCompletedTasks + " out of " + numberOfTasks + " tasks completed.");		
+	public void incrementNumberOfCompletedTasks() {
+		this.numberOfCompletedTasks++;
 	}
 	
-	
+	public void decrementNumberOfCompletedTasks() {
+		this.numberOfCompletedTasks--;
+	}	
 }

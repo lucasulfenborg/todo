@@ -12,13 +12,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import se.his.it401g.todo.HomeTask;
 import se.his.it401g.todo.StudyTask;
 import se.his.it401g.todo.Task;
+import se.his.it401g.todo.TaskListener;
 
 public class GUI implements ActionListener {
 
@@ -30,156 +28,13 @@ public class GUI implements ActionListener {
 	private JLabel tasksCompletedLabel;
 	private JScrollPane scrollPane;
 	private TaskManager taskManager;
+	private ButtonEventHandler buttonEventHandler;
+
 	
-	
-	public JButton getNewStudyTaskButton() {
-		return newStudyTaskButton;
-	}
-
-
-
-	public void setNewStudyTaskButton(JButton newStudyTaskButton) {
-		this.newStudyTaskButton = newStudyTaskButton;
-	}
-
-
-
-	public JButton getNewHomeTaskButton() {
-		return newHomeTaskButton;
-	}
-
-
-
-	public void setNewHomeTaskButton(JButton newHomeTaskButton) {
-		this.newHomeTaskButton = newHomeTaskButton;
-	}
-
-
-
-	public JButton getNewOtherTaskButton() {
-		return newOtherTaskButton;
-	}
-
-
-
-	public void setNewOtherTaskButton(JButton newOtherTaskButton) {
-		this.newOtherTaskButton = newOtherTaskButton;
-	}
-
-
-
-	public JButton getSortByTypeButton() {
-		return sortByTypeButton;
-	}
-
-
-
-	public void setSortByTypeButton(JButton sortByTypeButton) {
-		this.sortByTypeButton = sortByTypeButton;
-	}
-
-
-
-	public JButton getSortByNameButton() {
-		return sortByNameButton;
-	}
-
-
-
-	public void setSortByNameButton(JButton sortByNameButton) {
-		this.sortByNameButton = sortByNameButton;
-	}
-
-
-
-	public JButton getSortByCompletionButton() {
-		return sortByCompletionButton;
-	}
-
-
-
-	public void setSortByCompletionButton(JButton sortByCompletionButton) {
-		this.sortByCompletionButton = sortByCompletionButton;
-	}
-
-
-
-	public JFrame getFrame() {
-		return frame;
-	}
-
-
-
-	public void setFrame(JFrame frame) {
-		this.frame = frame;
-	}
-
-
-
-	public JPanel getMainPanel() {
-		return mainPanel;
-	}
-
-
-
-	public void setMainPanel(JPanel mainPanel) {
-		this.mainPanel = mainPanel;
-	}
-
-
-
-	public JPanel getTopButtonsPanel() {
-		return topButtonsPanel;
-	}
-
-
-
-	public void setTopButtonsPanel(JPanel topButtonsPanel) {
-		this.topButtonsPanel = topButtonsPanel;
-	}
-
-
-
-	public JPanel getTasksPanel() {
-		return tasksPanel;
-	}
-
-
-
-	public void setTasksPanel(JPanel tasksPanel) {
-		this.tasksPanel = tasksPanel;
-	}
-
-
-
-	public JLabel getTasksCompletedLabel() {
-		return tasksCompletedLabel;
-	}
-
-
-
-	public void setTasksCompletedLabel(JLabel tasksCompletedLabel) {
-		this.tasksCompletedLabel = tasksCompletedLabel;
-	}
-
-
-
-	public JScrollPane getScrollPane() {
-		return scrollPane;
-	}
-
-
-
-	public void setScrollPane(JScrollPane scrollPane) {
-		this.scrollPane = scrollPane;
-	}
-
-
-
-	public GUI() {
+	public GUI(TaskManager taskManager) {
 		this.frame = new JFrame();
-		this.taskManager = new TaskManager();
-		
+		this.taskManager = taskManager;
+		this.buttonEventHandler = new ButtonEventHandler(taskManager, this);
 	}
 	
 	public void execute() {
@@ -244,90 +99,56 @@ public class GUI implements ActionListener {
 		mainPanel.add(topButtonsPanel);
 		mainPanel.add(scrollPane);
 		mainPanel.add(tasksCompletedLabel);
-
-
 		frame.setVisible(true);
-
-
 	}
 	
-	private void updateTaskDisplay(java.util.List<Task> taskList) {
-	    tasksPanel.removeAll(); // Clear the panel
+	void updateTaskDisplay(java.util.List<Task> taskList) {
+	    tasksPanel.removeAll(); // Cear the panel
 	    for (Task task : taskList) {
-	        tasksPanel.add(task.getGuiComponent()); // Re-add in sorted order
+	        tasksPanel.add(task.getGuiComponent());
 	    }
+	    
+	    //Also update the amount of completed tasks label
+		tasksCompletedLabel.setText(taskManager.getNumberOfCompletedTasks() + " out of " + taskManager.getNumberOfTasks() + " tasks completed.");
+
+	    
 	    tasksPanel.revalidate(); // Update layout
 	    tasksPanel.repaint();    // Redraw panel
 	}
 	
-	//Method for updating the bottom label (number of completed tasks)
-	public void updateTasksCompletedLabel() {
-		tasksCompletedLabel.setText(taskManager.getNumberOfCompletedTasks() + " out of " + taskManager.getNumberOfTasks() + " tasks completed.");
-		
-	}
-
-
 
 	@Override
 	public void actionPerformed(ActionEvent whichButton) {
-		if (whichButton.getSource().equals(newStudyTaskButton)) {
-			//Action of newStudyTaskButton on click (create a study task button)
-			Task task = new StudyTask();
-			tasksPanel.add(task.getGuiComponent());
-			//Listen on the remove button for clicks
-			task.setTaskListener(this);
-			frame.revalidate();
-			numberOfTasks++;
-			taskList.add(task);
-			
-			updateTasksCompletedLabel();
-
+			this.buttonEventHandler.ButtonAction(whichButton);
+			updateTaskDisplay(taskManager.getTaskList());
 		}
-		if (whichButton.getSource().equals(newHomeTaskButton)) {
-			//Action of newHomeTaskButton on click (create a home task button)
-			Task task = new HomeTask();
-			tasksPanel.add(task.getGuiComponent());
-			//Listen on the remove button for clicks
-			task.setTaskListener(this);
-			frame.revalidate();
-			numberOfTasks++;
-			taskList.add(task);
-			
-			updateTasksCompletedLabel();
-
-		}
-		
-		else if (whichButton.getSource().equals(newOtherTaskButton)) {
-			//Action of newHomeTaskButton on click (create a home task button)
-			Task task = new OtherTask();
-			tasksPanel.add(task.getGuiComponent());
-			//Listen on the remove button for clicks
-				task.setTaskListener(this);
-				frame.revalidate();
-				numberOfTasks++;
-				taskList.add(task);
-				
-				updateTasksCompletedLabel();
-
-		}
-			
-		else if (whichButton.getSource().equals(sortByTypeButton)) {
-		    Collections.sort(taskManager.getTaskList(), Comparator.comparing(Task::getTaskType, String.CASE_INSENSITIVE_ORDER));
-		    updateTaskDisplay(taskManager.getTaskList());
-		}
-		else if (whichButton.getSource().equals(sortByCompletionButton)) {
-		    Collections.sort(taskManager.getTaskList(), Comparator.comparing(Task::isComplete));
-		    updateTaskDisplay(taskManager.getTaskList());
-		}
-		
-		else if (whichButton.getSource().equals(sortByNameButton)) {
-			Collections.sort(taskManager.getTaskList(), Comparator.comparing(Task::getText, String.CASE_INSENSITIVE_ORDER));
-		    updateTaskDisplay(taskManager.getTaskList());
-		}
-		
-	}
+	
+	//Getters for GUI components
+	public JButton getNewStudyTaskButton() {
+		return newStudyTaskButton;
 	}
 	
+	public JButton getNewHomeTaskButton() {
+		return newHomeTaskButton;
+	}
 	
+	public JButton getNewOtherTaskButton() {
+		return newOtherTaskButton;
+	}
 	
-
+	public JButton getSortByTypeButton() {
+		return sortByTypeButton;
+	}
+	
+	public JButton getSortByNameButton() {
+		return sortByNameButton;
+	}
+	
+	public JButton getSortByCompletionButton() {
+		return sortByCompletionButton;
+	}
+	
+	public JFrame getFrame() {
+		return frame;
+	}
+}
