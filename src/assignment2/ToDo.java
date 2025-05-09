@@ -6,7 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.Comparator;
-import se.his.it401g.todo.*;
+import se.his.it401g.todo.HomeTask;
+import se.his.it401g.todo.StudyTask;
+import se.his.it401g.todo.Task;
+import se.his.it401g.todo.TaskListener;
 
 
 public class ToDo implements ActionListener, TaskListener{
