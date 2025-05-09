@@ -10,6 +10,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import se.his.it401g.todo.Task;
+import se.his.it401g.todo.TaskListener;
+import se.his.it401g.todo.TaskInputListener;
+
 
 /**
  * Implements a simple other task type, following the Task.java interface class.
