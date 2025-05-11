@@ -1,24 +1,23 @@
 package assignment2;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import java.util.ArrayList;
-
 import se.his.it401g.todo.Task;
-import se.his.it401g.todo.TaskListener;
 
+//This class handles the task logic, 
 public class TaskManager  {
+	//Keep track of number of tasks
 	private int numberOfTasks;
+	//Keep track of completed tasks
 	private int numberOfCompletedTasks;
 	//Array list that will contain the tasks
 	private java.util.List<Task> taskList;
 
+	//Here is the constructor which creates the tasklist once a taskmanager is instantiated
 	public TaskManager() {
+		//An array list for holding the tasks
 		taskList = new java.util.ArrayList<>();
 
 	}
-	
-	//Getters and setters
+
+	//Getters and setters for using the taskmanager from other classes
 	public int getNumberOfTasks() {
 		return numberOfTasks;
 	}
@@ -30,7 +29,7 @@ public class TaskManager  {
 	public void addToTaskList(Task t) {
 		this.taskList.add(t);
 	}
-	
+
 	public void removeFromTaskList(Task t) {
 		this.taskList.remove(t);
 	}
@@ -38,7 +37,7 @@ public class TaskManager  {
 	public void incrementNumberOfTasks() {
 		this.numberOfTasks++;
 	}
-	
+
 	public void decrementNumberOfTasks() {
 		this.numberOfTasks--;
 	}
@@ -50,7 +49,7 @@ public class TaskManager  {
 	public void incrementNumberOfCompletedTasks() {
 		this.numberOfCompletedTasks++;
 	}
-	
+
 	public void decrementNumberOfCompletedTasks() {
 		this.numberOfCompletedTasks--;
 	}	
