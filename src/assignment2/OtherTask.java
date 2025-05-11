@@ -14,6 +14,10 @@ import se.his.it401g.todo.Task;
 import se.his.it401g.todo.TaskListener;
 import se.his.it401g.todo.TaskInputListener;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
+
 
 /**
  * Implements a simple other task type, following the Task.java interface class.
@@ -45,6 +49,13 @@ public class OtherTask extends JPanel implements Task {
 	 */
 	private TaskListener listener;
 	
+	//Textfield and label for duedate
+	private JTextField dueDateField;
+	private JLabel dueDateLabel;
+
+	
+	
+	
 	/**
 	 * This is the constructor for the task, initiating the GUI component for the task. Several listeners are used to react to various events in the GUI.  
 	 */
@@ -53,10 +64,19 @@ public class OtherTask extends JPanel implements Task {
 		this.text = new JTextField("New task",20);
 		this.textLabel = new JLabel();
 		this.textLabel.setVisible(false);
+		
 		JPanel center = new JPanel();
 		center.add(text);
 		center.add(textLabel);
 		add(center);
+		
+		// NEW: Add due date input
+	    this.dueDateField = new JTextField("", 5);
+	    this.dueDateLabel = new JLabel("Due date:");
+	    center.add(dueDateLabel);
+	    center.add(dueDateField);
+
+	    add(center);
 		
 		TaskInputListener inputListener = new TaskInputListener(this, text, textLabel);
 		this.text.addKeyListener(inputListener);
