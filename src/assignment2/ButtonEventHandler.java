@@ -1,99 +1,129 @@
 package assignment2;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+
 import se.his.it401g.todo.HomeTask;
 import se.his.it401g.todo.StudyTask;
 import se.his.it401g.todo.Task;
 import se.his.it401g.todo.TaskListener;
 
-//This class handles actions of buttons. It interacts with both the GUI and the Task manager 
-public class ButtonEventHandler implements TaskListener {
+/**
+ * Handles all button actions and interacts with TaskManager and GUI.
+ */
+public class ButtonEventHandler implements ActionListener, TaskListener {
+
 	private TaskManager taskManager;
 	private GUI gui;
+
+	private Comparator<Task> compareByType = new compareTaskType();
+	private Comparator<Task> compareByCompletion = new compareCompletion();
+	private Comparator<Task> compareByName = new compareName();
 
 	public ButtonEventHandler(TaskManager taskManager, GUI gui) {
 		this.taskManager = taskManager;
 		this.gui = gui;
-
 	}
 
-	//Method triggered from clicking buttons on the GUI. It does actions based on which button has been clicked.
-	void ButtonAction(ActionEvent whichButton) {
-		//First 3 buttons are for creating different types of tasks
-		if (whichButton.getSource().equals(gui.getNewStudyTaskButton())) {
-			Task t = new StudyTask();
-			t.setTaskListener(this);
-			taskCreated(t);
+	/**
+	 * Handles button clicks from GUI panels using ActionCommand.
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		switch (e.getActionCommand()) {
+		case "NEW_STUDY":
+			createStudyTask();
+			break;
+		case "NEW_HOME":
+			createHomeTask();
+			break;
+		case "NEW_OTHER":
+			createOtherTask();
+			break;
+		case "SORT_TYPE":
+			sortByType();
+			break;
+		case "SORT_NAME":
+			sortByName();
+			break;
+		case "SORT_COMPLETION":
+			sortByCompletion();
+			break;
 		}
 
-		else if (whichButton.getSource().equals(gui.getNewHomeTaskButton())) {
-			Task t = new HomeTask();
-			t.setTaskListener(this);
-			taskCreated(t);
-		}
-
-		else if (whichButton.getSource().equals(gui.getNewOtherTaskButton())) {
-			Task t = new OtherTask();
-			t.setTaskListener(this);
-			taskCreated(t);
-		}
-
-		//
-		//Sorting by type of the task
-		else if (whichButton.getSource().equals(gui.getSortByTypeButton())) {
-			Collections.sort(taskManager.getTaskList(), Comparator.comparing(Task::getTaskType, String.CASE_INSENSITIVE_ORDER));
-		}
-
-		//Sort by uncompleted tasks
-		else if (whichButton.getSource().equals(gui.getSortByCompletionButton())) {
-			Collections.sort(taskManager.getTaskList(), Comparator.comparing(Task::isComplete));
-		}
-
-		//Sort by the name of the task
-		else if (whichButton.getSource().equals(gui.getSortByNameButton())) {
-			Collections.sort(taskManager.getTaskList(), Comparator.comparing(Task::getText, String.CASE_INSENSITIVE_ORDER));
-		}
-
+		// Update GUI after every action
+		gui.updateTaskDisplay();
 	}
 
+	// Task creation helpers
+	private void createStudyTask() {
+		Task t = new StudyTask();
+		t.setTaskListener(this);
+		taskCreated(t);
+	}
 
-	//When a task is created, send it to the task manager and update the GUI
+	private void createHomeTask() {
+		Task t = new HomeTask();
+		t.setTaskListener(this);
+		taskCreated(t);
+	}
+
+	private void createOtherTask() {
+		Task t = new OtherTask();
+		t.setTaskListener(this);
+		taskCreated(t);
+	}
+
+	// Sorting helpers
+	private void sortByType() {
+		List<Task> taskList = taskManager.getTaskList();
+		Collections.sort(taskList, compareByType);
+	}
+
+	private void sortByName() {
+		List<Task> taskList = taskManager.getTaskList();
+		Collections.sort(taskList, compareByName);
+	}
+
+	private void sortByCompletion() {
+		List<Task> taskList = taskManager.getTaskList();
+		Collections.sort(taskList, compareByCompletion);
+	}
+
+	// TaskListener overrides
 	@Override
 	public void taskCreated(Task t) {
 		taskManager.addToTaskList(t);
 		taskManager.incrementNumberOfTasks();
-		gui.updateTaskDisplay(taskManager.getTaskList());
+		gui.updateTaskDisplay();
 	}
 
-	//When a task is removed
 	@Override
 	public void taskRemoved(Task t) {
 		taskManager.removeFromTaskList(t);
 		taskManager.decrementNumberOfTasks();
-		if(t.isComplete()) {
+		if (t.isComplete()) {
 			taskManager.decrementNumberOfCompletedTasks();
 		}
-		gui.updateTaskDisplay(taskManager.getTaskList());
+		gui.updateTaskDisplay();
 	}
 
-	//Overwrite taskcompleted and taskuncompleted to make it possible to track the number of completed tasks
 	@Override
 	public void taskCompleted(Task t) {
 		taskManager.incrementNumberOfCompletedTasks();
-		gui.updateTaskDisplay(taskManager.getTaskList());
+		gui.updateTaskDisplay();
 	}
 
 	@Override
 	public void taskUncompleted(Task t) {
 		taskManager.decrementNumberOfCompletedTasks();
-		gui.updateTaskDisplay(taskManager.getTaskList());
+		gui.updateTaskDisplay();
 	}
 
 	@Override
 	public void taskChanged(Task t) {
-		// TODO Auto-generated method stub
-
 	}
 }
